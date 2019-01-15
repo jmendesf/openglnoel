@@ -7,7 +7,7 @@
 
 int Application::run()
 {
-    glClearColor(1,0,0,1);
+    glClearColor(0.6,0.6,0.6,1);
 
 	// Put here code to run before rendering loop
     const auto program = glmlv::compileProgram({m_ShadersRootPath / "forward-renderer" / "forward.vs.glsl" ,
@@ -30,15 +30,18 @@ int Application::run()
         const auto seconds = glfwGetTime();
 
         // Put here rendering code
-       glUniformMatrix4fv(uMVPMatrix, 1, GL_FALSE, glm::value_ptr(ProjMatrix*MVMatrix));
-       glUniformMatrix4fv(uMVMatrix, 1, GL_FALSE, glm::value_ptr(MVMatrix));
-       glUniformMatrix4fv(uNormalMatrix, 1, GL_FALSE, glm::value_ptr(NormalMatrix));
+        MVMatrix = glm::translate(glm::mat4(1), glm::vec3(0,0,-5));
+        MVMatrix = glm::rotate(MVMatrix, 1.f, glm::vec3(1,1,0));
+
+        glUniformMatrix4fv(uMVPMatrix, 1, GL_FALSE, glm::value_ptr(ProjMatrix*MVMatrix));
+        glUniformMatrix4fv(uMVMatrix, 1, GL_FALSE, glm::value_ptr(MVMatrix));
+        glUniformMatrix4fv(uNormalMatrix, 1, GL_FALSE, glm::value_ptr(NormalMatrix));
 
         const auto fbSize = m_GLFWHandle.framebufferSize();
         glViewport(0, 0, fbSize.x, fbSize.y);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-       glBindVertexArray(vao);
+        glBindVertexArray(vao);
         glDrawElements(GL_TRIANGLES, sg.indexBuffer.size(), GL_UNSIGNED_INT,  (void*)0 );
 
         // GUI code:
